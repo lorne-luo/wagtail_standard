@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'wagtail.wagtailsearch',
     'wagtail.wagtailadmin',
     'wagtail.wagtailcore',
+    'wagtail.contrib.modeladmin',
+    'wagtail.contrib.settings',
+    'wagtail.contrib.table_block',
 
     # THIRD_PARTY_APPS
     'modelcluster',
