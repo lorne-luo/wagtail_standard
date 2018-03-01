@@ -62,11 +62,13 @@ INSTALLED_APPS = [
     # THIRD_PARTY_APPS
     'modelcluster',
     'taggit',
+    'rest_framework',
 
     # LOCAL_APPS
     'apps.home',
     'apps.search',
     'apps.users',
+    'apps.custom_settings',
 ]
 
 
