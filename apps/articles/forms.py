@@ -7,8 +7,8 @@ class ArticleWagtailAdminModelForm(WagtailAdminPageForm):
     class Media:
         js = (
             'js/collection-chooser.js',
-            'asset/jquery_chosen/chosen.jquery.min.js'
+            'vendor/jquery_chosen/chosen.jquery.min.js'
         )
         css = {
-            'all': ('asset/jquery_chosen/chosen.min.css',)
+            'all': ('vendor/jquery_chosen/chosen.min.css',)
         }
