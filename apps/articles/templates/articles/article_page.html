@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailimages_tags subscribe_tags gravatar file_exists wagtail_filters %}
+{% load static wagtailimages_tags subscribe_tags gravatar file_exists wagtail_filters %}
 
 {% block head %}
 	{% image page.thumbnail_image original as post_image %}
@@ -197,3 +197,11 @@
 
 {% endblock %}
 {% block subscribe_form %}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/slick/slider.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'vendor/slick/slick.min.js' %}"></script>
+{% endblock %}
