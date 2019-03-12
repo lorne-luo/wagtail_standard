@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags subscribe_tags gravatar file_exists wagtail_filters %}
+
+{% block head %}
+	{% image page.thumbnail_image original as post_image %}
+	<meta property="og:url" content="{{ page.full_url }}"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:title" content="{{ page.title }}"/>
+	<meta property="og:description" content="{% if page.short_description %}{{ page.short_description }}{% endif %}
+			{% if page.search_description %}{{ page.search_description }}{% endif %}"/>
+	<meta property="og:image" content="{{ post_image.url }}"/>
+{% endblock %}
+{% block body_class %}{{ block.super }} article-page {{ self.topic.slug }}{% endblock %}
+{% block content %}
+	<div class="article-wrapper">
+		<div class="search-box">
+			<form action="{% url 'search' %}" method="get">
+				<input name="keyword" id="id_keyword" type="text" placeholder="Search">
+				<button type="submit">Search</button>
+			</form>
+		</div>
+
+
+		<div class="article-body">
+			<div class="left-menu">
+				{% if self.reading_mins %}
+					<p class="bubble reading">{{ self.reading_mins }} min</p>
+				{% endif %}
+				{% if self.view_count %}
+					<p class="bubble view">{{ self.view_count }}</p>
+				{% endif %}
+				<p class="bubble print">print</p>
+				<a target="_blank" class="bubble share twitter-share-button"
+				   href="https://twitter.com/intent/tweet?text={{ page.full_url|urlencode }}">Share</a>
+				<a href="https://www.facebook.com/sharer/sharer.php?u={{ page.full_url|urlencode }}&amp;src=sdkpreparse"
+				   target="_blank" class="bubble share facebook-this fb-share-button"
+				   data-href="{{ page.full_url }}" data-layout="button" data-mobile-iframe="false">Share</a>
+				<a href="https://www.linkedin.com/shareArticle?mini=true&url={{ page.full_url|urlencode }}"
+				   target="_blank" class="bubble share linkedin">Share</a>
+			</div>
+
+			<div class="article-content">
+				<div class="article-title-wrapper">
+					<h1 class="article-title">{{ self.title|default:"" }}</h1>
+					<p class="date">
+                        {{ self.last_published_at|date:"DATE_FORMAT" }}
+                        <span class="author">
+                            By
+                            <a href="{% url 'search' %}?contributors={{ self.owner.id }}">{{ self.owner.get_full_name|default:"" }}</a>
+                        </span>
+                    </p>
+					<div class="tool-bar-wrapper">
+						<div class="sector row">
+							<span class="sector-label">Sector:</span>
+							{% for sector in self.sectors.all %}
+								{{ sector }}{% if not forloop.last %},{% endif %}
+							{% endfor %}
+						</div>
+						<div class="left-menu tool-bar tablet-only row">
+							{% if self.reading_mins %}
+								<p class="bubble reading">{{ self.reading_mins }} min</p>
+							{% endif %}
+							{% if self.view_count %}
+								<p class="bubble view">{{ self.view_count }}</p>
+							{% endif %}
+							<p class="bubble text">Share</p>
+							<a target="_blank" class="bubble share twitter-share-button"
+							   href="https://twitter.com/intent/tweet?text={{ page.full_url|urlencode }}">Share</a>
+							<a href="https://www.linkedin.com/shareArticle?mini=true&url={{ page.full_url|urlencode }}"
+							   target="_blank" class="bubble share linkedin">Share</a>
+							<a href="https://www.facebook.com/sharer/sharer.php?u={{ page.full_url|urlencode }}&amp;src=sdkpreparse"
+							   target="_blank" class="bubble share facebook-this fb-share-button"
+							   data-href="{{ page.full_url }}" data-layout="button" data-mobile-iframe="false">Share</a>
+						</div>
+					</div>
+				</div>
+				<div class="article-content-wrapper">
+					{% for block in page.content %}
+						{% if block.block_type == 'heading' %}
+							{% if block.value.heading_type == "h1" %}
+								<h1>{{ block.value.heading_text }}</h1>
+							{% elif block.value.heading_type == "h2" %}
+								<h2>{{ block.value.heading_text }}</h2>
+							{% elif block.value.heading_type == "h3" %}
+								<h3>{{ block.value.heading_text }}</h3>
+							{% elif block.value.heading_type == "h4" %}
+								<h4>{{ block.value.heading_text }}</h4>
+							{% elif block.value.heading_type == "h5" %}
+								<h5>{{ block.value.heading_text }}</h5>
+							{% elif block.value.heading_type == "h6" %}
+								<h6>{{ block.value.heading_text }}</h6>
+							{% endif %}
+						{% elif block.block_type == 'button' %}
+							<a class="btn {{ block.value.button_color }}"
+							   href="{{ block.value.button_url }}">{{ block.value.button_name }}</a><br/>
+						{% elif block.block_type == 'accoordion' %}
+							<div class="accordion-box">
+								<div class="li">
+									<div class="title"><h3 class="heading">{{ block.value.accoordion_heading }}</h3>
+										<span
+												class="icon-indicator caret"></span></div>
+									<div class="content">{{ block.value.accoordion_content }}</div>
+								</div>
+							</div>
+						{% elif block.block_type == 'quote' %}
+							<blockquote>
+								{{ block.value.quote }}
+							</blockquote>
+						{% elif block.block_type == 'table' %}
+							<div class="table-wrapper">
+								{{ block }}
+							</div>
+						{% elif block.block_type == 'image' %}
+							<figure class="aligned_image {{ block.value.image_position }}">
+								{% image block.value.image original %}
+								<figcaption>{{ block.value.image_caption }}</figcaption>
+							</figure>
+                        {% elif content.block_type == 'gallery' %}
+                            {% gellary content.value.gallery_collection as images %}
+                            {% if images %}
+							<div class="gallery">
+                                <h2 class="gallery-title">{{ content.value.gallery_title }}</h2>
+                                <div class="gallery__slider-main">
+                                    {% for i in images %}
+                                        <div>{% image i original %}</div>
+                                    {% endfor %}
+                                </div>
+							    <div class="gallery__slider-thumb">
+                                    {% for i in images %}
+                                        <div>{% image i original %}</div>
+                                    {% endfor %}
+                                </div>
+							</div>
+                            {% endif %}
+						{% elif block.block_type == 'download' %}
+							<a target="_blank" href="{{ block.value.url }}" class="download-btn" download=>Download
+								{{ block.value.title }} <span
+										class="extension">({{ block.value.file_extension }}
+									{% if block.value.file|file_exists %} |
+										{{ block.value.file.size|filesizeformat }}{% endif %})</span><span
+										class="download-btn-icon"></span></a>
+						{% else %}
+							{{ block }}
+						{% endif %}
+					{% endfor %}
+				</div>
+				<div class="article-tags">
+					{% if self.tags.all %}
+						{% for tag in self.tags.all %}
+							<a href="{% url 'search' %}?tags={{ tag.id }}">{{ tag }}</a>
+						{% endfor %}
+					{% endif %}
+				</div>
+				<div class="author-wrapper">
+					<img src="{% gravatar_url self.owner.email 25 %}"/>
+					<div class="author-details">
+						<p class="author-name">{{ self.owner.get_full_name|default:"" }}</p>
+						<p class="details">{{ self.owner.bio|default:"" }}</p>
+						<a href="{% url 'search' %}?contributors={{ self.owner.id }}">See all articles by
+							{{ self.owner.first_name|default:"" }}</a>
+					</div>
+
+
+				</div>
+				<div id="related_articles">
+					<div class="wrapper">
+						<h2 class="section-title">Related articles</h2>
+						<button class="close">HIDE RELATED</button>
+						<ul>
+							{% for article in self.related_articles %}
+								<li>
+									{% include 'includes/home_article.html' with article=article %}
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="right-menu">
+				{% if self.promotion_image %}
+					{% if self.promotional_url %}
+						<a class="promotional" target="_blank" href="{{ self.promotional_url }}">
+					{% endif %}
+				{% image self.promotion_image original %}
+				{% if self.promotional_url %}
+					</a>
+				{% endif %}
+				{% endif %}
+				<div class="subscription-form">
+					{% subscribe_form %}
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}
+{% block subscribe_form %}{% endblock %}

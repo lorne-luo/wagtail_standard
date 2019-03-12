@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.search',
     'apps.users',
+    'apps.articles',
     'apps.custom_settings',
 ]
 
