@@ -10,22 +10,18 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from taggit.models import TaggedItemBase
-from dateutil.relativedelta import relativedelta
-from dateutil.rrule import rrule, DAILY
-from wagtail.wagtailcore import hooks
 from modelcluster.contrib.taggit import ClusterTaggableManager
-from modelcluster.fields import ParentalKey, ParentalManyToManyField
-from wagtail.wagtailcore import blocks
-from wagtail.wagtailcore.query import PageQuerySet
-from wagtail.wagtailimages.blocks import ImageChooserBlock
-from wagtail.wagtailsearch import index
-from wagtail.wagtailcore.models import Page, Orderable, PageManager, BasePageManager
-from wagtail.wagtailcore.fields import StreamField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel, MultiFieldPanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtaildocs.blocks import DocumentChooserBlock
-from wagtail.wagtailembeds.blocks import EmbedBlock
-from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
+from modelcluster.fields import ParentalKey
+from wagtail.core import blocks
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.search import index
+from wagtail.core.models import Page, Orderable
+from wagtail.core.fields import StreamField
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel, MultiFieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.documents.blocks import DocumentChooserBlock
+from wagtail.embeds.blocks import EmbedBlock
+from wagtail.admin.edit_handlers import TabbedInterface, ObjectList
 from wagtail.contrib.table_block.blocks import TableBlock
 from django.template.defaultfilters import slugify
 

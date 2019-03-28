@@ -2,15 +2,15 @@ from __future__ import absolute_import, unicode_literals
 
 from django.utils.functional import cached_property
 
-from wagtail.wagtailcore.blocks import ChooserBlock
-from wagtail.wagtailcore.models import Collection
-from wagtail.wagtailimages.shortcuts import get_rendition_or_not_found
+from wagtail.core.blocks import ChooserBlock
+from wagtail.core.models import Collection
+from wagtail.images.shortcuts import get_rendition_or_not_found
 import json
 
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from wagtail.wagtailadmin.widgets import AdminChooser
+from wagtail.admin.widgets import AdminChooser
 
 
 class CollectionChooser(AdminChooser):

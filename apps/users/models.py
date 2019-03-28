@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from wagtail.wagtailcore.models import Page
+from wagtail.core.models import Page
 
 
 class UserManager(BaseUserManager):

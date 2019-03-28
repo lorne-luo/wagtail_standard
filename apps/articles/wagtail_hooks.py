@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from django.utils.html import format_html, format_html_join
+from taggit.models import Tag
 from wagtail.contrib.modeladmin.options import modeladmin_register, ModelAdmin
-from wagtail.wagtailcore import hooks
 from core.wagtail.permission import OwnerPermissionHelper
 from .models import ArticlePage, Category
 

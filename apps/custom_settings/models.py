@@ -3,9 +3,9 @@ from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.settings.models import BaseSetting
 from wagtail.contrib.settings.registry import register_setting
 from core.constants import AU_CITY_CHOICES, AU_STATE_CHOICES
-from wagtail.wagtailsnippets.models import register_snippet
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.snippets.models import register_snippet
+from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 
 @register_setting(icon='form')

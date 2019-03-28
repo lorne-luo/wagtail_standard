@@ -1,6 +1,4 @@
-from django.forms import HiddenInput
-from wagtail.wagtailadmin.forms import WagtailAdminPageForm
-from django import forms
+from wagtail.admin.forms import WagtailAdminPageForm
 
 
 class ArticleWagtailAdminModelForm(WagtailAdminPageForm):
