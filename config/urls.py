@@ -12,7 +12,7 @@ from apps.search import views as search_views
 from apps.articles.api import urls as article_api_urls
 
 urlpatterns = [
-    url(r'^django-admin/', include(admin.site.urls)),
+    url(r'^django-admin/', admin.site.urls),
 
     url(r'^admin/', include(wagtailadmin_urls)),
     url(r'^documents/', include(wagtaildocs_urls)),

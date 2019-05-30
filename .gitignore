@@ -14,3 +14,4 @@ celerybeat*
 .env
 config/settings/local.py
 staticfiles/
+.python-version
