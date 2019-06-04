@@ -14,26 +14,44 @@
             {% endblock %}
             {% block title_suffix %}
                 {% with self.get_site.site_name as site_name %}
-                    {% if site_name %}- {{ site_name }}{% endif %}
+                    {% if site_name %} | {{ site_name }}{% endif %}
                 {% endwith %}
             {% endblock %}
         </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.min.css' %}">
         {% block extra_css %}
             {# Override this in templates to add extra stylesheets #}
         {% endblock %}
     </head>
 
     <body class="{% block body_class %}{% endblock %}">
-        {% block content %}{% endblock %}
+
+        {# Header Bloack #}
+        {% block header %}
+            {% include "includes/header.html" with parent=site_root calling_page=self %}
+        {% endblock header %}
+
+        {# Content Bloack #}
+        <div class="page-content">
+            {% block content %}{% endblock %}
+        </div>
+
+        {# Footer Block #}
+        {% block footer %}
+            {% include "includes/footer.html" %}
+        {% endblock footer %}
 
         {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/accordion-menu.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/shadow-scroller.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/vendor/vendor.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/main.min.js' %}"></script>
 
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}

@@ -17,7 +17,7 @@
                 {% endif %}
             </div>
         </div>
-    {% elif content_block.block_type == 'button' %} 
+    {% elif content_block.block_type == 'button' %}
         <a class="btn {{ content_block.value.button_color }}"
            href="{{ content_block.value.button_url }}">{{ content_block.value.button_name }}</a><br/>
     {% elif content_block.block_type == 'accordion' %}
@@ -88,6 +88,18 @@
     {% elif content_block.block_type == 'testimonial' %}
         {# Testimonial StreamField  #}
         {% include "includes/streamblocks/streamblock_testimonial.html" with content=content_block.value %}
+
+    {% elif content_block.block_type == 'multi_testimonials' %}
+        {# Multi-Testimonials StreamField  #}
+        <div class="multi_testimonials">
+            {% if content_block.value.title %}
+                <h4>{{ content_block.value.title }}</h4>
+            {% endif %}
+
+            {% for content in content_block.value.testimonials %}
+                {% include "includes/streamblocks/streamblock_testimonial.html" with content=content %}
+            {% endfor %}
+        </div>
 
     {% else %}
         <div class="other-block">

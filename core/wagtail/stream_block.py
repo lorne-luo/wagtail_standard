@@ -79,7 +79,7 @@ ARTICLE_STREAM_BLOCK = [
         ('info_block_image', ImageChooserBlock(required=False)),
         ('info_block_image_position', blocks.ChoiceBlock(choices=[
             ('left', 'Image on the left'),
-            ('right','Image on the right')
+            ('right', 'Image on the right')
         ])),
         ('info_block_icon_section', blocks.ListBlock(blocks.StructBlock([
             ('info_block_icon_text', blocks.CharBlock(required=False)),
@@ -130,9 +130,17 @@ ARTICLE_STREAM_BLOCK = [
         ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
         ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
     ], icon='user')),
+    ('multi_testimonials', blocks.StructBlock([
+        ('title', blocks.CharBlock(required=False)),
+        ('testimonials', blocks.ListBlock(blocks.StructBlock([
+            ('testimonial_image', ImageChooserBlock(required=False)),
+            ('testimonial_text', blocks.RichTextBlock(required=False)),
+            ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
+            ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
+        ]))),
+    ], icon='user')),
     ('form', WagtailFormBlock()),
 ]
-
 
 
 class CollectionChooser(AdminChooser):
