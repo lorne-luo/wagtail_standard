@@ -26,7 +26,7 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from django.template.defaultfilters import slugify
 
 from apps.articles.forms import ArticleWagtailAdminModelForm
-from core.wagtail.streamfield_blocks import CollectionChooserBlock
+from core.wagtail.stream_block import CollectionChooserBlock
 
 
 class Category(models.Model):

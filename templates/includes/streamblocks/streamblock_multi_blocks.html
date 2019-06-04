@@ -1,0 +1,22 @@
+{% load wagtailimages_tags %}
+<div class="multi-blocks">
+    <div class="wrapper">
+        {% if content.multi_blocks_heading %}
+            <h3 class="multi-blocks__heading">{{ content.multi_blocks_heading }}</h3>
+        {% endif %}
+        <div class="multi-blocks__wrapper">
+            {% for list in content.multi_blocks_section %}
+                <div class="multi-blocks__block">
+                    {% image list.multi_block_image original %}
+                    <div class="multi-blocks__block-heading">{{ list.multi_block_heading }}</div>
+                    <div class="multi-blocks__block-text">{{ list.multi_block_text }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if content.multi_block_url_text %}
+            <a class="multi-blocks__btn btn btn-tertiary " href="{% if content.multi_block_url %}{{ content.multi_block_url }}{% endif%}">
+            {{ content.multi_block_url_text }}
+            </a>
+        {% endif %}
+    </div>
+</div>

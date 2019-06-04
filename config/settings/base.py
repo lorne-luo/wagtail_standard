@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'wagtail.contrib.modeladmin',
     'wagtail.contrib.settings',
     'wagtail.contrib.table_block',
+    'wagtailstreamforms',
+    'wagtailmenus',
+    'condensedinlinepanel',
 
     # THIRD_PARTY_APPS
     'modelcluster',
@@ -107,6 +110,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'wagtail.contrib.settings.context_processors.settings',
+                'wagtailmenus.context_processors.wagtailmenus',
+
             ],
         },
     },
@@ -205,6 +211,19 @@ WAGTAIL_SITE_NAME = "mysite"
 WAGTAIL_USER_EDIT_FORM = 'apps.users.forms.CustomUserEditForm'
 WAGTAIL_USER_CREATION_FORM = 'apps.users.forms.CustomUserCreationForm'
 WAGTAIL_USER_CUSTOM_FIELDS = []
+
+#Project Email Settings
+#------------------------------------------------------------------------------
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@luotao.net')
+WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = env('WAGTAILADMIN_NOTIFICATION_FROM_EMAIL', default=DEFAULT_FROM_EMAIL)
+
+
+# the model defined to save advanced form settings
+# in the format of 'app_label.model_class'.
+# Model must inherit from 'wagtailstreamforms.models.AbstractFormSetting'.
+WAGTAILSTREAMFORMS_ADVANCED_SETTINGS_MODEL = 'cms.contact.AdvancedFormSetting'
+
+# WAGTAILSTREAMFORMS_ENABLE_FORM_PROCESSING = False #Custom submission methode
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
