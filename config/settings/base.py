@@ -12,6 +12,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import environ
+from wagtail.embeds.oembed_providers import youtube, vimeo
 
 root = environ.Path(__file__) - 3  # (wagtail-standard/config/settings/base.py - 3 = wagtail-standard/)
 
@@ -223,6 +224,13 @@ WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = env('WAGTAILADMIN_NOTIFICATION_FROM_EMAIL
 # in the format of 'app_label.model_class'.
 # Model must inherit from 'wagtailstreamforms.models.AbstractFormSetting'.
 WAGTAILSTREAMFORMS_ADVANCED_SETTINGS_MODEL = 'contact.AdvancedFormSetting'
+
+WAGTAILEMBEDS_FINDERS = [
+    {
+        'class': 'wagtail.embeds.finders.oembed',
+        'providers': [youtube, vimeo],
+    }
+]
 
 # WAGTAILSTREAMFORMS_ENABLE_FORM_PROCESSING = False #Custom submission methode
 
