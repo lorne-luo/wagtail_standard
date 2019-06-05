@@ -33,6 +33,6 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticlePage
         fields = (
-            'id', 'thumbnail_image', 'promotion_image', 'topic', 'media_type_display', 'thumbnail_image_url', 'view_count',
-            'reading_mins', 'tags', 'sectors', 'is_home_featured', 'short_description', 'media_type', 'title', 'slug',
+            'id', 'thumbnail_image', 'promotion_image', 'media_type_display', 'thumbnail_image_url', 'view_count',
+            'tags', 'short_description', 'media_type', 'title', 'slug',
             'owner', 'last_published_at', 'url')

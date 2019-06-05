@@ -26,7 +26,7 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from django.template.defaultfilters import slugify
 
 from apps.articles.forms import ArticleWagtailAdminModelForm
-from core.wagtail.stream_block import CollectionChooserBlock
+from core.wagtail.stream_block import CollectionChooserBlock, ARTICLE_STREAM_BLOCK
 
 
 class Category(models.Model):
@@ -75,12 +75,9 @@ class ArticlePageTag(TaggedItemBase):
 
 class ArticlePage(Page):
     tags = ClusterTaggableManager(through=ArticlePageTag, blank=True)
-    is_home_featured = models.BooleanField(_('is home featured'), default=False)
-    topic = ParentalKey('topics.TopicPage', related_name='topic_articles', blank=True, null=True,
-                        on_delete=models.SET_NULL)  # redundant of parent topicpage
     view_count = models.PositiveIntegerField('view count', blank=False, default=0)
-    reading_mins = models.PositiveIntegerField('reading minutes', blank=True, null=True)
     short_description = models.TextField(_('short description'), max_length=512, blank=True)
+    content = StreamField(ARTICLE_STREAM_BLOCK, blank=True)
 
     main_image = models.ForeignKey(
         'wagtailimages.Image',
@@ -90,58 +87,6 @@ class ArticlePage(Page):
         related_name='+'
     )
 
-    content = StreamField([
-        ('heading', blocks.StructBlock([
-            ('heading_type', blocks.ChoiceBlock(choices=[
-                ('h1', 'H1'),
-                ('h2', 'H2'),
-                ('h3', 'H3'),
-                ('h4', 'H4'),
-                ('h5', 'H5'),
-                ('h6', 'H6'),
-            ])),
-            ('heading_text', blocks.CharBlock(required=True)),
-        ], icon='title')),
-        ('paragraph', blocks.RichTextBlock()),
-        ('table', TableBlock(table_options={'colHeaders': False, })),
-        ('embed', EmbedBlock()),
-        ('download', DocumentChooserBlock(required=True)),
-        ('button', blocks.StructBlock([
-            ('button_name', blocks.CharBlock(required=True)),
-            ('button_url', blocks.CharBlock(required=True)),
-            ('button_color', blocks.ChoiceBlock(choices=[
-                ('btn--green', 'Green'),
-                ('btn--orange', 'Orange'),
-                ('btn--yellow', 'Yellow'),
-                ('btn--lime', 'Lime'),
-                ('btn--blue', 'Blue'),
-                ('btn--grey', 'Grey'),
-            ], blank=False)),
-        ], icon='form')),
-        ('html', blocks.RawHTMLBlock()),
-        ('image', blocks.StructBlock([
-            ('image', ImageChooserBlock()),
-            ('image_caption', blocks.CharBlock(required=False)),
-            ('image_position', blocks.ChoiceBlock(choices=[
-                ('center', 'Center'),
-                ('left', 'Left'),
-                ('right', 'Right'),
-                ('full-width', 'Full width')
-            ])),
-        ], icon='image')),
-        ('gallery', blocks.StructBlock([
-            ('gallery_title', blocks.CharBlock(required=False)),
-            ('gallery_collection', CollectionChooserBlock()),
-        ], icon='picture')),
-        ('accoordion', blocks.StructBlock([
-            ('accoordion_heading', blocks.CharBlock(required=True)),
-            ('accoordion_content', blocks.RichTextBlock()),
-        ], icon='arrows-up-down')),
-        ('quote', blocks.StructBlock([
-            ('quote', blocks.RichTextBlock(required=False)),
-        ], icon='openquote')),
-
-    ])
 
     parent_page_types = ['home.Homepage']
     base_form_class = ArticleWagtailAdminModelForm
@@ -167,8 +112,6 @@ class ArticlePage(Page):
     ]
 
     settings_panels = Page.settings_panels + [
-        FieldPanel('is_home_featured'),
-        FieldPanel('reading_mins'),
         FieldPanel('owner'),
     ]
 
@@ -178,16 +121,6 @@ class ArticlePage(Page):
         ObjectList(Page.promote_panels, heading='SEO settings'),
         ObjectList(settings_panels, heading='Article settings', classname="settings"),
     ])
-
-    def save(self, *args, **kwargs):
-        instance = super(ArticlePage, self).save(*args, **kwargs)
-
-        # unfeature others before call super save
-        if self.live and self.is_home_featured:
-            root = self.get_root()
-            ArticlePage.objects.descendant_of(root).exclude(id=self.id).update(is_home_featured=False)
-
-        return instance
 
     def update_view_count(self):
         # total view counter

@@ -16,7 +16,7 @@ class ArticlePageAdmin(ModelAdmin):
     menu_order = 230
     add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
     exclude_from_explorer = False  # or True to exclude pages of this type from Wagtail's explorer view
-    list_display = ('title', 'slug', 'owner', 'live', 'is_home_featured', 'last_published_at')
+    list_display = ('title', 'slug', 'owner', 'live', 'last_published_at')
     list_filter = ['sectors']
     search_fields = ['title', 'slug']
     permission_helper_class = OwnerPermissionHelper
