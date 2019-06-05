@@ -1,9 +1,10 @@
 import json
 
+from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from wagtail.admin.widgets import AdminChooser
 from wagtail.core import blocks
-from wagtail.core.blocks import ChooserBlock, render_to_string
+from wagtail.core.blocks import ChooserBlock
 from wagtail.core.models import Collection
 from wagtail.images.blocks import ImageChooserBlock
 from django.utils.translation import ugettext_lazy as _

@@ -9,6 +9,7 @@ from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
+from modelcluster.models import ClusterableModel
 from taggit.models import TaggedItemBase
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
@@ -25,11 +26,11 @@ from wagtail.admin.edit_handlers import TabbedInterface, ObjectList
 from wagtail.contrib.table_block.blocks import TableBlock
 from django.template.defaultfilters import slugify
 
-from apps.articles.forms import ArticleWagtailAdminModelForm
+from cms.articles.forms import ArticleWagtailAdminModelForm
 from core.wagtail.stream_block import CollectionChooserBlock, ARTICLE_STREAM_BLOCK
 
 
-class Category(models.Model):
+class Category(ClusterableModel):
     name = models.CharField(
         max_length=80, unique=True, verbose_name=_('Category'))
     slug = models.SlugField(unique=True, max_length=80)
@@ -38,8 +39,8 @@ class Category(models.Model):
         help_text=_(
             'Categories, unlike tags, can have a hierarchy. You might have a '
             'Jazz category, and under that have children categories for Bebop'
-            ' and Big Band. Totally optional.')
-    )
+            ' and Big Band. Totally optional.'),
+        on_delete=models.SET_NULL)
     description = models.CharField(max_length=500, blank=True)
 
     class Meta:
@@ -78,6 +79,8 @@ class ArticlePage(Page):
     view_count = models.PositiveIntegerField('view count', blank=False, default=0)
     short_description = models.TextField(_('short description'), max_length=512, blank=True)
     content = StreamField(ARTICLE_STREAM_BLOCK, blank=True)
+    category = ParentalKey('articles.Category', related_name='category_articles', blank=True, null=True,
+                           on_delete=models.SET_NULL)
 
     main_image = models.ForeignKey(
         'wagtailimages.Image',
@@ -86,7 +89,6 @@ class ArticlePage(Page):
         on_delete=models.SET_NULL,
         related_name='+'
     )
-
 
     parent_page_types = ['home.Homepage']
     base_form_class = ArticleWagtailAdminModelForm
@@ -103,9 +105,9 @@ class ArticlePage(Page):
     category_content_panels = [
         MultiFieldPanel(
             [
-                FieldPanel('topic', widget=forms.Select),
+                FieldPanel('category', widget=forms.Select),
             ],
-            heading="Categories,tags Block",
+            heading="Categories",
             classname="collapsible"
         ),
         InlinePanel('article_tags', label="Tags", classname="collapsible"),

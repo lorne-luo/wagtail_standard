@@ -8,8 +8,8 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from apps.search import views as search_views
-from apps.articles.api import urls as article_api_urls
+from cms.search import views as search_views
+from cms.articles.api import urls as article_api_urls
 
 urlpatterns = [
     url(r'^django-admin/', admin.site.urls),

@@ -68,11 +68,12 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # LOCAL_APPS
-    'apps.home',
-    'apps.search',
-    'apps.users',
-    'apps.articles',
-    'apps.custom_settings',
+    'cms.home',
+    'cms.search',
+    'cms.users',
+    'cms.articles',
+    'cms.contact',
+    # 'cms.custom_settings',
 ]
 
 
@@ -208,8 +209,8 @@ MEDIA_URL = '/media/'
 # ------------------------------------------------------------------------------
 
 WAGTAIL_SITE_NAME = "mysite"
-WAGTAIL_USER_EDIT_FORM = 'apps.users.forms.CustomUserEditForm'
-WAGTAIL_USER_CREATION_FORM = 'apps.users.forms.CustomUserCreationForm'
+WAGTAIL_USER_EDIT_FORM = 'cms.users.forms.CustomUserEditForm'
+WAGTAIL_USER_CREATION_FORM = 'cms.users.forms.CustomUserCreationForm'
 WAGTAIL_USER_CUSTOM_FIELDS = []
 
 #Project Email Settings
@@ -221,7 +222,7 @@ WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = env('WAGTAILADMIN_NOTIFICATION_FROM_EMAIL
 # the model defined to save advanced form settings
 # in the format of 'app_label.model_class'.
 # Model must inherit from 'wagtailstreamforms.models.AbstractFormSetting'.
-WAGTAILSTREAMFORMS_ADVANCED_SETTINGS_MODEL = 'cms.contact.AdvancedFormSetting'
+WAGTAILSTREAMFORMS_ADVANCED_SETTINGS_MODEL = 'contact.AdvancedFormSetting'
 
 # WAGTAILSTREAMFORMS_ENABLE_FORM_PROCESSING = False #Custom submission methode
 
