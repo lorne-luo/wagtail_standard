@@ -1,5 +1,5 @@
 {% load wagtailimages_tags %}
-<div class="checklist-block {% if content.checklist_style == 'full-checklist' %}full-width{% endif %}">
+<div class="checklist-block {{ content.block_class|default:"" }} {% if content.checklist_style == 'full-checklist' %}full-width{% endif %}" {% if content.block_id %}id="{{ content.block_id }}"{% endif %}>
 	<div class="wrapper">
 		{% if content.checklist_heading %}
 			<h3 class="checklist-block__heading">{{ content.checklist_heading }}</h3>
@@ -7,7 +7,7 @@
 		{% if content.checklist_style == 'image-checklist'  %}
 			<div class="checklist-block__image">{% image content.checklist_image original %}</div>
 		{% endif %}
-		
+
 		<div class="checklist-block__content">
 			{% if content.checklist_text %}
 				<div class="checklist-block__">{{ content.checklist_text }}</div>

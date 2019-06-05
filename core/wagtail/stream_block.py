@@ -1,18 +1,45 @@
-import json
+import os
 
-from django.template.loader import render_to_string
-from django.utils.functional import cached_property
-from wagtail.admin.widgets import AdminChooser
-from wagtail.core import blocks
-from wagtail.core.blocks import ChooserBlock
-from wagtail.core.models import Collection
-from wagtail.images.blocks import ImageChooserBlock
-from django.utils.translation import ugettext_lazy as _
-from wagtail.documents.blocks import DocumentChooserBlock
-from wagtail.embeds.blocks import EmbedBlock
 from wagtail.contrib.table_block.blocks import TableBlock
-from wagtail.images.shortcuts import get_rendition_or_not_found
+from wagtail.core import blocks
+from wagtail.embeds.blocks import EmbedBlock
+from wagtail.images.blocks import ImageChooserBlock
 from wagtailstreamforms.blocks import WagtailFormBlock
+
+class CustomStructBlock(blocks.StructBlock):
+    """base custom block, add block_id,block_class,block_template for each"""
+
+    template_path = 'includes/streamblocks'  # all templates for steam block under this path
+
+    def get_template_path(self, filename):
+        filename = os.path.basename(filename)
+        return os.path.join(self.template_path, filename), filename
+
+    def get_templates(self, kwargs):
+        templates = kwargs.pop('templates', ())
+        if isinstance(templates, str):
+            filename = os.path.basename(templates)
+            return [self.get_template_path(filename)]
+        elif type(templates) in [list, tuple]:
+            if not len(templates):
+                raise Exception('Should provide at latest one templates')
+
+            if isinstance(templates[0], str):
+                return [self.get_template_path(t) for t in templates]
+            return templates
+        raise Exception('templates should be tuple, list or str.')
+
+    def __init__(self, local_blocks=None, **kwargs):
+        skip = kwargs.pop('skip', False)
+        templates = self.get_templates(kwargs)
+        if not skip:
+            local_blocks = [('block_id', blocks.CharBlock(required=False)),
+                            ('block_class', blocks.CharBlock(required=False)),
+                            ('block_template', blocks.ChoiceBlock(choices=templates, default=templates[0][0],
+                                                                  required=False))] + local_blocks
+
+        super(CustomStructBlock, self).__init__(local_blocks, **kwargs)
+
 
 new_table_options = {
     'colHeaders': False,
@@ -61,7 +88,7 @@ ARTICLE_STREAM_BLOCK = [
     ('quote', blocks.StructBlock([
         ('quote', blocks.RichTextBlock(required=False)),
     ], icon='openquote')),
-    ('banner', blocks.StructBlock([
+    ('banner', CustomStructBlock([
         ('banner_heading', blocks.CharBlock(required=False)),
         ('banner_text', blocks.RichTextBlock(required=False)),
         ('banner_button_name', blocks.CharBlock(required=False)),
@@ -71,8 +98,10 @@ ARTICLE_STREAM_BLOCK = [
             ('bannerimage-bg', 'Image as background'),
             ('bannerimage-section', 'Image in a section')
         ])),
-    ], icon='placeholder')),
-    ('info_block', blocks.StructBlock([
+    ], icon='placeholder',
+        templates=['streamblock_hero_banner.html']
+    )),
+    ('info_block', CustomStructBlock([
         ('info_block_heading', blocks.CharBlock(required=False)),
         ('info_block_text', blocks.RichTextBlock(required=False)),
         ('info_block_button_name', blocks.CharBlock(required=False)),
@@ -86,32 +115,39 @@ ARTICLE_STREAM_BLOCK = [
             ('info_block_icon_text', blocks.CharBlock(required=False)),
             ('info_block_icon_image', ImageChooserBlock(required=False)),
         ]))),
-    ], icon='plus')),
-    ('multi_blocks', blocks.StructBlock([
-        ('multi_blocks_heading', blocks.CharBlock(required=False)),
-        ('multi_blocks_section', blocks.ListBlock(blocks.StructBlock([
-            ('multi_block_heading', blocks.CharBlock(required=False)),
-            ('multi_block_text', blocks.RichTextBlock(required=False)),
-            ('multi_block_image', ImageChooserBlock(required=False)),
+    ], icon='plus',
+        templates=['streamblock_info_block.html']
+    )),
+    ('multi_blocks', CustomStructBlock([
+        ('block_heading', blocks.CharBlock(required=False)),
+        ('items_section', blocks.ListBlock(blocks.StructBlock([
+            ('heading', blocks.CharBlock(required=False)),
+            ('text', blocks.RichTextBlock(required=False)),
+            ('image', ImageChooserBlock(required=False)),
+            ('image_link', blocks.CharBlock(required=False)),
         ]))),
-        ('multi_block_url_text', blocks.CharBlock(required=False)),
-        ('multi_block_url', blocks.CharBlock(required=False)),
-    ], icon='grip')),
-    ('info_banner', blocks.StructBlock([
+        ('block_url_text', blocks.CharBlock(required=False)),
+        ('block_url', blocks.CharBlock(required=False)),
+    ], icon='grip',
+        templates=['streamblock_multi_blocks.html']
+    )),
+    ('info_banner', CustomStructBlock([
         ('info_banner_heading', blocks.CharBlock(required=False)),
         ('info_banner_text', blocks.RichTextBlock(required=False)),
         ('info_banner_button_name', blocks.CharBlock(required=False)),
         ('info_banner_button_url', blocks.CharBlock(required=False)),
-    ], icon='plus-inverse')),
-    ('progress_steps', blocks.StructBlock([
+    ], icon='plus-inverse',
+        templates=['streamblock_info_banner.html'])),
+    ('progress_steps', CustomStructBlock([
         ('progress_steps_image', ImageChooserBlock(required=False)),
         ('progress_steps_blocks', blocks.ListBlock(blocks.StructBlock([
             ('progress_steps_block_heading', blocks.CharBlock(required=False, label="Step Heading")),
             ('progress_steps_block_text', blocks.RichTextBlock(required=False, label="Step Text")),
             ('progress_steps_block_image', ImageChooserBlock(required=False, label="Step Image")),
         ]))),
-    ], icon='order')),
-    ('checklist', blocks.StructBlock([
+    ], icon='order',
+        templates=['streamblock_progress_steps.html'])),
+    ('checklist', CustomStructBlock([
         ('checklist_heading', blocks.CharBlock(required=False)),
         ('checklist_image', ImageChooserBlock(required=False)),
         ('checklist_text', blocks.RichTextBlock(required=False)),
@@ -124,14 +160,16 @@ ARTICLE_STREAM_BLOCK = [
             ('full-checklist', 'Full checklist without image'),
             ('image-checklist', 'Image and checklist side by side'),
         ], blank=False)),
-    ], icon='list-ul')),
-    ('testimonial', blocks.StructBlock([
+    ], icon='list-ul',
+        templates=['streamblock_checklist.html'])),
+    ('testimonial', CustomStructBlock([
         ('testimonial_image', ImageChooserBlock(required=False)),
         ('testimonial_text', blocks.RichTextBlock(required=False)),
         ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
         ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
-    ], icon='user')),
-    ('multi_testimonials', blocks.StructBlock([
+    ], icon='user',
+        templates=['streamblock_testimonial.html'])),
+    ('multi_testimonials', CustomStructBlock([
         ('title', blocks.CharBlock(required=False)),
         ('testimonials', blocks.ListBlock(blocks.StructBlock([
             ('testimonial_image', ImageChooserBlock(required=False)),
@@ -139,70 +177,7 @@ ARTICLE_STREAM_BLOCK = [
             ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
             ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
         ]))),
-    ], icon='user')),
+    ], icon='user',
+        templates=['streamblock_multi_testimonial.html'])),
     ('form', WagtailFormBlock()),
 ]
-
-
-class CollectionChooser(AdminChooser):
-    add_one_text = _('Add a collection')
-    choose_one_text = _('Choose an collection')
-    link_to_chosen_text = _('Edit this collection')
-
-    def __init__(self, **kwargs):
-        super(CollectionChooser, self).__init__(**kwargs)
-        self.image_model = Collection
-
-    def render_html(self, name, value, attrs):
-        collections = Collection.objects.all()
-        original_field_html = super(CollectionChooser, self).render_html(name, value, attrs)
-
-        collection_items = []
-        for collection in collections:
-            if value == collection.id:
-                collection_items.append(
-                    '<option selected="true" value="%s">%s</option>' % (collection.id, collection.name))
-            else:
-                collection_items.append('<option value="%s">%s</option>' % (collection.id, collection.name))
-
-        collection_selector = '''
-        <select name="%s" id="%s_select" placeholder="%s">
-            <option value="" selected="">---------</option>
-                %s
-        </select>
-        ''' % (
-            attrs['id'],
-            attrs['id'],
-            attrs['placeholder'],
-            '\n'.join(collection_items)
-        )
-
-        return render_to_string("articles/widgets/collection_chooser.html", {
-            'widget': self,
-            'original_field_html': original_field_html,
-            'attrs': attrs,
-            'value': value,
-            'collection_selector': collection_selector,
-        })
-
-    def render_js_init(self, id_, name, value):
-        return "createCollectionChooser({0});".format(json.dumps(id_))
-
-
-class CollectionChooserBlock(ChooserBlock):
-    @cached_property
-    def target_model(self):
-        return Collection
-
-    @cached_property
-    def widget(self):
-        return CollectionChooser
-
-    def render_basic(self, value, context=None):
-        if value:
-            return get_rendition_or_not_found(value, 'original').img_tag()
-        else:
-            return ''
-
-    class Meta:
-        icon = "picture"
