@@ -6,11 +6,12 @@ from wagtail.core.fields import StreamField
 
 from wagtail.core.models import Page
 
-from core.wagtail.stream_block import ARTICLE_STREAM_BLOCK
+from core.wagtail.page import StreamPage
+from core.wagtail.stream_block import SUPER_STREAM_BLOCKS
 
 
-class HomePage(Page):
-    content = StreamField(ARTICLE_STREAM_BLOCK, blank=True)
+class HomePage(StreamPage):
+    content = StreamField(SUPER_STREAM_BLOCKS, blank=True)
 
     content_panels = Page.content_panels + [
         StreamFieldPanel('content')

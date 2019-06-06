@@ -27,7 +27,8 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from django.template.defaultfilters import slugify
 
 from cms.articles.forms import ArticleWagtailAdminModelForm
-from core.wagtail.stream_block import CollectionChooserBlock, ARTICLE_STREAM_BLOCK
+from core.wagtail.page import StreamPage
+from core.wagtail.stream_block import CollectionChooserBlock, SUPER_STREAM_BLOCKS
 
 
 class Category(ClusterableModel):
@@ -74,11 +75,10 @@ class ArticlePageTag(TaggedItemBase):
     content_object = ParentalKey('ArticlePage', related_name='article_tags', on_delete=models.CASCADE)
 
 
-class ArticlePage(Page):
+class ArticlePage(StreamPage):
     tags = ClusterTaggableManager(through=ArticlePageTag, blank=True)
     view_count = models.PositiveIntegerField('view count', blank=False, default=0)
     short_description = models.TextField(_('short description'), max_length=512, blank=True)
-    content = StreamField(ARTICLE_STREAM_BLOCK, blank=True)
     category = ParentalKey('articles.Category', related_name='category_articles', blank=True, null=True,
                            on_delete=models.SET_NULL)
 

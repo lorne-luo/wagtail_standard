@@ -5,7 +5,7 @@ from django.db import models
 from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, StreamFieldPanel, MultiFieldPanel
-from core.wagtail.stream_block import ARTICLE_STREAM_BLOCK
+from core.wagtail.stream_block import SUPER_STREAM_BLOCKS
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtailstreamforms.blocks import WagtailFormBlock

@@ -54,7 +54,7 @@ class CustomStructBlock(blocks.StructBlock):
 new_table_options = {
     'colHeaders': False,
 }
-ARTICLE_STREAM_BLOCK = [
+SUPER_STREAM_BLOCKS = [
     ('heading', blocks.StructBlock([
         ('heading_type', blocks.ChoiceBlock(choices=[
             ('h2', 'H2'),
