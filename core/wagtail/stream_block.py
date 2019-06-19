@@ -51,149 +51,6 @@ class CustomStructBlock(blocks.StructBlock):
         super(CustomStructBlock, self).__init__(local_blocks, **kwargs)
 
 
-new_table_options = {
-    'colHeaders': False,
-}
-SUPER_STREAM_BLOCKS = [
-    ('heading', blocks.StructBlock([
-        ('heading_type', blocks.ChoiceBlock(choices=[
-            ('h2', 'H2'),
-            ('h3', 'H3'),
-            ('h4', 'H4'),
-            ('h5', 'H5'),
-            ('h6', 'H6'),
-        ])),
-        ('heading_text', blocks.CharBlock(required=True)),
-    ], icon='title')),
-    ('paragraph', blocks.RichTextBlock()),
-    ('table', TableBlock(table_options=new_table_options)),
-    ('embed', EmbedBlock()),
-    ('button', blocks.StructBlock([
-        ('button_name', blocks.CharBlock(required=True)),
-        ('button_url', blocks.CharBlock(required=True)),
-        ('button_color', blocks.ChoiceBlock(choices=[
-            ('btn--green', 'Green'),
-            ('btn--olive', 'Olive'),
-            ('btn--dark-green', 'Dark green'),
-            ('btn--lime', 'Lime'),
-            ('btn--light-green', 'Light green'),
-            ('btn--grey', 'Grey'),
-        ], blank=False)),
-    ], icon='form')),
-    ('html', blocks.RawHTMLBlock()),
-    ('image', blocks.StructBlock([
-        ('image', ImageChooserBlock()),
-        ('image_caption', blocks.CharBlock(required=False)),
-        ('image_position', blocks.ChoiceBlock(choices=[
-            ('center', 'Center'),
-            ('left', 'Left'),
-            ('right', 'Right'),
-            ('full-width', 'Full width')
-        ])),
-    ], icon='image')),
-    ('accordion', blocks.StructBlock([
-        ('accordion_heading', blocks.CharBlock(required=True)),
-        ('accordion_content', blocks.RichTextBlock()),
-    ], icon='arrows-up-down')),
-    ('quote', blocks.StructBlock([
-        ('quote', blocks.RichTextBlock(required=False)),
-    ], icon='openquote')),
-    ('banner', CustomStructBlock([
-        ('banner_heading', blocks.CharBlock(required=False)),
-        ('banner_text', blocks.RichTextBlock(required=False)),
-        ('banner_button_name', blocks.CharBlock(required=False)),
-        ('banner_button_url', blocks.CharBlock(required=False)),
-        ('banner_image', ImageChooserBlock(required=True)),
-        ('banner_image_position', blocks.ChoiceBlock(choices=[
-            ('bannerimage-bg', 'Image as background'),
-            ('bannerimage-section', 'Image in a section')
-        ])),
-    ], icon='placeholder',
-        templates=['streamblock_hero_banner.html']
-    )),
-    ('info_block', CustomStructBlock([
-        ('info_block_heading', blocks.CharBlock(required=False)),
-        ('info_block_text', blocks.RichTextBlock(required=False)),
-        ('info_block_button_name', blocks.CharBlock(required=False)),
-        ('info_block_button_url', blocks.CharBlock(required=False)),
-        ('info_block_image', ImageChooserBlock(required=False)),
-        ('info_block_image_position', blocks.ChoiceBlock(choices=[
-            ('left', 'Image on the left'),
-            ('right', 'Image on the right')
-        ])),
-        ('info_block_icon_section', blocks.ListBlock(blocks.StructBlock([
-            ('info_block_icon_text', blocks.CharBlock(required=False)),
-            ('info_block_icon_image', ImageChooserBlock(required=False)),
-        ]))),
-    ], icon='plus',
-        templates=['streamblock_info_block.html']
-    )),
-    ('multi_blocks', CustomStructBlock([
-        ('block_heading', blocks.CharBlock(required=False)),
-        ('items_section', blocks.ListBlock(blocks.StructBlock([
-            ('heading', blocks.CharBlock(required=False)),
-            ('text', blocks.RichTextBlock(required=False)),
-            ('image', ImageChooserBlock(required=False)),
-            ('image_link', blocks.CharBlock(required=False)),
-        ]))),
-        ('block_url_text', blocks.CharBlock(required=False)),
-        ('block_url', blocks.CharBlock(required=False)),
-    ], icon='grip',
-        templates=['streamblock_multi_blocks.html']
-    )),
-    ('info_banner', CustomStructBlock([
-        ('info_banner_heading', blocks.CharBlock(required=False)),
-        ('info_banner_text', blocks.RichTextBlock(required=False)),
-        ('info_banner_button_name', blocks.CharBlock(required=False)),
-        ('info_banner_button_url', blocks.CharBlock(required=False)),
-    ], icon='plus-inverse',
-        templates=['streamblock_info_banner.html'])),
-    ('progress_steps', CustomStructBlock([
-        ('progress_steps_image', ImageChooserBlock(required=False)),
-        ('progress_steps_blocks', blocks.ListBlock(blocks.StructBlock([
-            ('progress_steps_block_heading', blocks.CharBlock(required=False, label="Step Heading")),
-            ('progress_steps_block_text', blocks.RichTextBlock(required=False, label="Step Text")),
-            ('progress_steps_block_image', ImageChooserBlock(required=False, label="Step Image")),
-        ]))),
-    ], icon='order',
-        templates=['streamblock_progress_steps.html'])),
-    ('checklist', CustomStructBlock([
-        ('checklist_heading', blocks.CharBlock(required=False)),
-        ('checklist_image', ImageChooserBlock(required=False)),
-        ('checklist_text', blocks.RichTextBlock(required=False)),
-        ('checklist_lists', blocks.ListBlock(blocks.StructBlock([
-            ('checklist_list', blocks.CharBlock(required=False, label="Checklist")),
-        ]))),
-        ('checklist_button_name', blocks.CharBlock(required=False)),
-        ('checklist_button_url', blocks.CharBlock(required=False)),
-        ('checklist_style', blocks.ChoiceBlock(choices=[
-            ('full-checklist', 'Full checklist without image'),
-            ('image-checklist', 'Image and checklist side by side'),
-        ], blank=False)),
-    ], icon='list-ul',
-        templates=['streamblock_checklist.html'])),
-    ('testimonial', CustomStructBlock([
-        ('testimonial_image', ImageChooserBlock(required=False)),
-        ('testimonial_text', blocks.RichTextBlock(required=False)),
-        ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
-        ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
-    ], icon='user',
-        templates=['streamblock_testimonial.html'])),
-    ('multi_testimonials', CustomStructBlock([
-        ('title', blocks.CharBlock(required=False)),
-        ('testimonials', blocks.ListBlock(blocks.StructBlock([
-            ('testimonial_image', ImageChooserBlock(required=False)),
-            ('testimonial_text', blocks.RichTextBlock(required=False)),
-            ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
-            ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
-        ]))),
-    ], icon='user',
-        templates=['streamblock_multi_testimonial.html'])),
-    ('form', WagtailFormBlock()),
-]
-
-
-
 class CollectionChooser(AdminChooser):
     add_one_text = _('Add a collection')
     choose_one_text = _('Choose an collection')
@@ -256,3 +113,193 @@ class CollectionChooserBlock(ChooserBlock):
 
     class Meta:
         icon = "folder-open-1"
+
+
+heading = ('heading', blocks.StructBlock([
+    ('heading_type', blocks.ChoiceBlock(choices=[
+        ('h2', 'H2'),
+        ('h3', 'H3'),
+        ('h4', 'H4'),
+        ('h5', 'H5'),
+        ('h6', 'H6'),
+    ])),
+    ('heading_text', blocks.CharBlock(required=True)),
+], icon='title'))
+
+paragraph = ('paragraph', blocks.RichTextBlock())
+
+table = ('table', TableBlock(table_options={'colHeaders': False}))
+
+embed = ('embed', EmbedBlock())
+
+button = ('button', blocks.StructBlock([
+    ('button_name', blocks.CharBlock(required=True)),
+    ('button_url', blocks.CharBlock(required=True)),
+    ('button_color', blocks.ChoiceBlock(choices=[
+        ('btn--green', 'Green'),
+        ('btn--olive', 'Olive'),
+        ('btn--dark-green', 'Dark green'),
+        ('btn--lime', 'Lime'),
+        ('btn--light-green', 'Light green'),
+        ('btn--grey', 'Grey'),
+    ], blank=False)),
+], icon='form'))
+
+html = ('html', blocks.RawHTMLBlock())
+
+image = ('image', blocks.StructBlock([
+    ('image', ImageChooserBlock()),
+    ('image_caption', blocks.CharBlock(required=False)),
+    ('image_position', blocks.ChoiceBlock(choices=[
+        ('center', 'Center'),
+        ('left', 'Left'),
+        ('right', 'Right'),
+        ('full-width', 'Full width')
+    ])),
+], icon='image'))
+
+accordion = ('accordion', blocks.StructBlock([
+    ('accordion_heading', blocks.CharBlock(required=True)),
+    ('accordion_content', blocks.RichTextBlock()),
+], icon='arrows-up-down'))
+
+quote = ('quote', blocks.StructBlock([
+    ('quote', blocks.RichTextBlock(required=False)),
+], icon='openquote'))
+
+video_banner = ('video_banner', CustomStructBlock([
+    ('title', blocks.CharBlock(required=False)),
+    ('text', blocks.RichTextBlock(required=False)),
+    ('video', EmbedBlock(required=True)),
+    ('mobile_image', ImageChooserBlock(required=True)),
+], icon='placeholder',
+    templates=['streamblock_video_banner.html']
+))
+
+banner = ('banner', CustomStructBlock([
+    ('banner_heading', blocks.CharBlock(required=False)),
+    ('banner_text', blocks.RichTextBlock(required=False)),
+    ('banner_button_name', blocks.CharBlock(required=False)),
+    ('banner_button_url', blocks.CharBlock(required=False)),
+    ('banner_image', ImageChooserBlock(required=True)),
+    ('banner_image_position', blocks.ChoiceBlock(choices=[
+        ('bannerimage-bg', 'Image as background'),
+        ('bannerimage-section', 'Image in a section')
+    ])),
+], icon='placeholder',
+    templates=['streamblock_hero_banner.html']
+))
+
+info_block = ('info_block', CustomStructBlock([
+    ('info_block_heading', blocks.CharBlock(required=False)),
+    ('info_block_text', blocks.RichTextBlock(required=False)),
+    ('info_block_button_name', blocks.CharBlock(required=False)),
+    ('info_block_button_url', blocks.CharBlock(required=False)),
+    ('info_block_image', ImageChooserBlock(required=False)),
+    ('info_block_image_position', blocks.ChoiceBlock(choices=[
+        ('left', 'Image on the left'),
+        ('right', 'Image on the right')
+    ])),
+    ('info_block_icon_section', blocks.ListBlock(blocks.StructBlock([
+        ('info_block_icon_text', blocks.CharBlock(required=False)),
+        ('info_block_icon_image', ImageChooserBlock(required=False)),
+    ]))),
+], icon='plus',
+    templates=['streamblock_info_block.html']
+))
+
+multi_blocks = ('multi_blocks', CustomStructBlock([
+    ('block_heading', blocks.CharBlock(required=False)),
+    ('items_section', blocks.ListBlock(blocks.StructBlock([
+        ('heading', blocks.CharBlock(required=False)),
+        ('text', blocks.RichTextBlock(required=False)),
+        ('image', ImageChooserBlock(required=False)),
+        ('image_link', blocks.CharBlock(required=False)),
+    ]))),
+    ('block_url_text', blocks.CharBlock(required=False)),
+    ('block_url', blocks.CharBlock(required=False)),
+], icon='grip',
+    templates=['streamblock_multi_blocks.html']
+))
+
+info_banner = ('info_banner', CustomStructBlock([
+    ('info_banner_heading', blocks.CharBlock(required=False)),
+    ('info_banner_text', blocks.RichTextBlock(required=False)),
+    ('info_banner_button_name', blocks.CharBlock(required=False)),
+    ('info_banner_button_url', blocks.CharBlock(required=False)),
+], icon='plus-inverse',
+    templates=['streamblock_info_banner.html']))
+
+progress_steps = ('progress_steps', CustomStructBlock([
+    ('progress_steps_image', ImageChooserBlock(required=False)),
+    ('progress_steps_blocks', blocks.ListBlock(blocks.StructBlock([
+        ('progress_steps_block_heading', blocks.CharBlock(required=False, label="Step Heading")),
+        ('progress_steps_block_text', blocks.RichTextBlock(required=False, label="Step Text")),
+        ('progress_steps_block_image', ImageChooserBlock(required=False, label="Step Image")),
+    ]))),
+], icon='order',
+    templates=['streamblock_progress_steps.html']))
+
+checklist = ('checklist', CustomStructBlock([
+    ('checklist_heading', blocks.CharBlock(required=False)),
+    ('checklist_image', ImageChooserBlock(required=False)),
+    ('checklist_text', blocks.RichTextBlock(required=False)),
+    ('checklist_lists', blocks.ListBlock(blocks.StructBlock([
+        ('checklist_list', blocks.CharBlock(required=False, label="Checklist")),
+    ]))),
+    ('checklist_button_name', blocks.CharBlock(required=False)),
+    ('checklist_button_url', blocks.CharBlock(required=False)),
+    ('checklist_style', blocks.ChoiceBlock(choices=[
+        ('full-checklist', 'Full checklist without image'),
+        ('image-checklist', 'Image and checklist side by side'),
+    ], blank=False)),
+], icon='list-ul',
+    templates=['streamblock_checklist.html']))
+
+testimonial = ('testimonial', CustomStructBlock([
+    ('testimonial_image', ImageChooserBlock(required=False)),
+    ('testimonial_text', blocks.RichTextBlock(required=False)),
+    ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
+    ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
+], icon='user',
+    templates=['streamblock_testimonial.html']))
+
+multi_testimonials = ('multi_testimonials', CustomStructBlock([
+    ('title', blocks.CharBlock(required=False)),
+    ('testimonials', blocks.ListBlock(blocks.StructBlock([
+        ('testimonial_image', ImageChooserBlock(required=False)),
+        ('testimonial_text', blocks.RichTextBlock(required=False)),
+        ('testimonial_name', blocks.CharBlock(required=False, label="Name")),
+        ('testimonial_position', blocks.CharBlock(required=False, label="Position")),
+    ]))),
+], icon='user',
+    templates=['streamblock_multi_testimonial.html']))
+
+form = ('form', WagtailFormBlock())
+
+gallery = ('gallery', blocks.StructBlock([
+    ('gallery_title', blocks.CharBlock(required=False)),
+    ('gallery_collection', CollectionChooserBlock()),
+], icon='picture')),
+
+SUPER_STREAM_BLOCKS = [
+    heading, paragraph,
+    table,
+    embed,
+    button,
+    html,
+    image,
+    accordion,
+    quote,
+    video_banner,
+    banner,
+    info_block,
+    multi_blocks,
+    info_banner,
+    progress_steps,
+    checklist,
+    testimonial,
+    multi_testimonials,
+    form,
+    gallery
+]
